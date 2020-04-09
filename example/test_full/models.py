@@ -157,3 +157,11 @@ class PartialUpdateB(ComputedFieldsModel):
     @computed(models.CharField(max_length=32), depends=['f_ba#name'])
     def comp(self):
         return self.f_ba.name + self.name
+
+class Parent(ComputedFieldsModel):
+    @computed(models.IntegerField(default=0), depends=['children#parent'])
+    def children_count(self):
+        return self.children.all().count()
+
+class Child(ComputedFieldsModel):
+    parent = models.ForeignKey(Parent, related_name='children', on_delete=models.CASCADE)
