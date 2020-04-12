@@ -157,3 +157,35 @@ class PartialUpdateB(ComputedFieldsModel):
     @computed(models.CharField(max_length=32), depends=['f_ba#name'])
     def comp(self):
         return self.f_ba.name + self.name
+
+# test classes for self-dependent fields
+class SimpleComputed(ComputedFieldsModel):
+    val = models.IntegerField(default=0)
+
+    @computed(models.FloatField(default=0))
+    def doubled_value(self):
+        return self.val * 2
+
+
+class LessSimpleComputedA(ComputedFieldsModel):
+    val = models.IntegerField(default=0)
+
+    @computed(models.FloatField(default=0))
+    def get_two(self):
+        return 2
+
+    @computed(models.FloatField(default=0))
+    def doubled_value(self):
+        return self.val * self.get_two
+
+
+class LessSimpleComputedB(ComputedFieldsModel):
+    val = models.IntegerField(default=0)
+
+    @computed(models.FloatField(default=0))
+    def doubled_value(self):
+        return self.val * self.get_two
+
+    @computed(models.FloatField(default=0))
+    def get_two(self):
+        return 2
